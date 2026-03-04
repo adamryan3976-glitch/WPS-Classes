@@ -104,7 +104,7 @@
 
         <!-- App View -->
         <div id="appView" class="hidden">
-            <div id="resultsSummary" class="mb-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Initialising...</div>
+            <div id="resultsSummary" class="mb-4 text-[10px] font-black text-slate-400 uppercase tracking-widest leading-relaxed">Initialising...</div>
             <div id="resultsList" class="grid gap-3"></div>
         </div>
     </main>
@@ -115,7 +115,6 @@
         imgElements.forEach(id => {
             const el = document.getElementById(id);
             el.src = LOGO_URL;
-            // Only show authLogo immediately; headerLogo shows after login
             if(id === 'authLogo') el.classList.remove('hidden');
         });
         
@@ -199,6 +198,7 @@
 
         function applyFiltersAndSort() {
             let filtered = [...rawData];
+            
             if (appMode === 'search') {
                 const searchTerm = searchInput.value.toLowerCase();
                 const selectedGrade = gradeFilter.value;
@@ -215,6 +215,7 @@
                     filtered = filtered.filter(s => String(s.Grade) === selectedGrade);
                 }
                 filtered.sort((a, b) => String(a[sortBy] || "").toLowerCase().localeCompare(String(b[sortBy] || "").toLowerCase()));
+                resultsSummary.innerText = `${filtered.length} Students Found`;
             } else {
                 const selectedTeacher = teacherSelect.value;
                 if(!selectedTeacher) {
@@ -224,8 +225,23 @@
                 }
                 filtered = filtered.filter(s => s.Teacher === selectedTeacher);
                 filtered.sort((a, b) => String(a.Name).toLowerCase().localeCompare(String(b.Name).toLowerCase()));
+                
+                // Calculate Grade Breakdown
+                const breakdown = filtered.reduce((acc, curr) => {
+                    const g = curr.Grade || 'Unknown';
+                    acc[g] = (acc[g] || 0) + 1;
+                    return acc;
+                }, {});
+
+                // Sort grades (JK, SK, then 1, 2, 3...)
+                const sortedGrades = Object.keys(breakdown).sort((a, b) => {
+                    const order = ["JK", "SK", "1", "2", "3", "4", "5", "6", "7", "8"];
+                    return order.indexOf(String(a)) - order.indexOf(String(b));
+                });
+
+                const breakdownStr = sortedGrades.map(g => `Grade ${g}: ${breakdown[g]} Students`).join(' | ');
+                resultsSummary.innerText = `${breakdownStr} | Total: ${filtered.length} Students`;
             }
-            resultsSummary.innerText = `${filtered.length} Students Found`;
             renderData(filtered);
         }
 
