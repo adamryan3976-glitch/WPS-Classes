@@ -11,11 +11,9 @@
     <meta name="apple-mobile-web-app-title" content="Knights">
     
     <script>
-        // Updated with your specific GitHub Raw URL
         const LOGO_URL = 'https://github.com/adamryan3976-glitch/WPS-Classes/blob/main/Knight%20Class%20Lists.png?raw=true';
     </script>
 
-    <!-- Dynamic Favicon and Apple Touch Icon -->
     <link id="favicon" rel="icon" type="image/png" href="https://github.com/adamryan3976-glitch/WPS-Classes/blob/main/Knight%20Class%20Lists.png?raw=true">
     <link id="apple-icon" rel="apple-touch-icon" href="https://github.com/adamryan3976-glitch/WPS-Classes/blob/main/Knight%20Class%20Lists.png?raw=true">
 
@@ -26,11 +24,6 @@
         .active-filter { background-color: #1e40af; color: white; border-color: #1e40af; }
         .mode-active { background-color: #eff6ff; color: #1e40af; border-color: #bfdbfe; }
         input:focus { outline: none; }
-        
-        /* Knights Theme Colors */
-        .text-knight-blue { color: #1e40af; }
-        .bg-knight-blue { background-color: #1e40af; }
-        .border-knight-gold { border-color: #eab308; }
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-900 font-sans">
@@ -40,20 +33,18 @@
         <div class="max-w-2xl mx-auto">
             <div class="flex justify-between items-center mb-4">
                 <div class="flex items-center gap-3">
-                    <img id="headerLogo" src="https://github.com/adamryan3976-glitch/WPS-Classes/blob/main/Knight%20Class%20Lists.png?raw=true" alt="Knights Logo" class="h-10 w-10 object-contain hidden border border-slate-100 rounded-lg bg-white">
+                    <img id="headerLogo" src="" alt="Knights Logo" class="h-10 w-10 object-contain hidden border border-slate-100 rounded-lg bg-white">
                     <h1 class="text-xl font-extrabold text-blue-800 tracking-tight">Knights Directory</h1>
                 </div>
                 <button id="logoutBtn" class="text-xs text-slate-400 font-semibold uppercase tracking-widest hidden">Logout</button>
             </div>
             
             <div id="navControls" class="hidden space-y-3">
-                <!-- Mode Switcher -->
                 <div class="flex p-1 bg-slate-100 rounded-xl mb-2">
                     <button onclick="setMode('search')" id="modeSearch" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all mode-active">Search All</button>
                     <button onclick="setMode('class')" id="modeClass" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all">Class Lists</button>
                 </div>
 
-                <!-- Search View Controls -->
                 <div id="searchControls" class="space-y-3">
                     <div class="relative">
                         <input type="text" id="searchInput" placeholder="Search name, teacher, or room..." 
@@ -80,7 +71,6 @@
                     </div>
                 </div>
 
-                <!-- Class List View Controls -->
                 <div id="classListControls" class="hidden">
                     <select id="teacherSelect" onchange="applyFiltersAndSort()" class="w-full p-3 rounded-xl bg-slate-100 border-none focus:ring-2 focus:ring-blue-500 text-sm font-semibold">
                         <option value="">Choose a Teacher...</option>
@@ -91,35 +81,26 @@
     </nav>
 
     <main class="max-w-2xl mx-auto p-4">
-        <!-- Auth View -->
         <div id="authView" class="mt-10 text-center max-w-sm mx-auto">
             <div class="bg-white p-8 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100">
-                <img id="authLogo" src="https://github.com/adamryan3976-glitch/WPS-Classes/blob/main/Knight%20Class%20Lists.png?raw=true" alt="Knights Logo" class="w-32 h-32 mx-auto mb-6 object-contain hidden">
+                <img id="authLogo" src="" alt="Knights Logo" class="w-32 h-32 mx-auto mb-6 object-contain hidden">
                 <h2 class="text-xl font-bold mb-2">Knights Secure Access</h2>
                 <p class="text-slate-500 text-sm mb-8">Verification required for Winchester P.S.</p>
-                <input type="password" id="accessKeyInput" placeholder="Enter Access Key" class="w-full p-4 rounded-xl bg-slate-50 border-2 border-transparent focus:border-blue-500 text-center mb-4 transition-all outline-none">
+                <input type="password" id="accessKeyInput" placeholder="Enter Access Key" class="w-full p-4 rounded-xl bg-slate-50 border-2 border-transparent focus:border-blue-500 text-center mb-4 outline-none">
                 <button id="loginBtn" class="w-full bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg active:scale-95 transition-all">Unlock Dashboard</button>
             </div>
         </div>
 
-        <!-- App View -->
         <div id="appView" class="hidden">
-            <div id="resultsSummary" class="mb-4 text-[10px] font-black text-slate-400 uppercase tracking-widest leading-relaxed">Initialising...</div>
+            <div id="resultsSummary" class="mb-4 text-[10px] font-black text-slate-500 uppercase tracking-widest leading-relaxed bg-blue-50/50 p-3 rounded-xl border border-blue-100/50">Initialising...</div>
             <div id="resultsList" class="grid gap-3"></div>
         </div>
     </main>
 
     <script>
-        // Set URLs for Logo and Icons
-        const imgElements = ['authLogo', 'headerLogo'];
-        imgElements.forEach(id => {
-            const el = document.getElementById(id);
-            el.src = LOGO_URL;
-            if(id === 'authLogo') el.classList.remove('hidden');
-        });
-        
-        document.getElementById('favicon').href = LOGO_URL;
-        document.getElementById('apple-icon').href = LOGO_URL;
+        document.getElementById('authLogo').src = LOGO_URL;
+        document.getElementById('authLogo').classList.remove('hidden');
+        document.getElementById('headerLogo').src = LOGO_URL;
 
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzhNA2HKIiDNQkrTxdWTKvBC1cPjMIcxFzQNYjcQhZ3N0Wr7oTdQ6gE_ima4R7VSRTgZw/exec'; 
         let rawData = [];
@@ -227,20 +208,17 @@
                 filtered.sort((a, b) => String(a.Name).toLowerCase().localeCompare(String(b.Name).toLowerCase()));
                 
                 // Calculate Grade Breakdown
-                const breakdown = filtered.reduce((acc, curr) => {
-                    const g = curr.Grade || 'Unknown';
-                    acc[g] = (acc[g] || 0) + 1;
-                    return acc;
-                }, {});
-
-                // Sort grades (JK, SK, then 1, 2, 3...)
-                const sortedGrades = Object.keys(breakdown).sort((a, b) => {
-                    const order = ["JK", "SK", "1", "2", "3", "4", "5", "6", "7", "8"];
-                    return order.indexOf(String(a)) - order.indexOf(String(b));
+                const counts = {};
+                filtered.forEach(s => {
+                    const g = String(s.Grade || 'Unknown');
+                    counts[g] = (counts[g] || 0) + 1;
                 });
 
-                const breakdownStr = sortedGrades.map(g => `Grade ${g}: ${breakdown[g]} Students`).join(' | ');
-                resultsSummary.innerText = `${breakdownStr} | Total: ${filtered.length} Students`;
+                const gradeOrder = ["JK", "SK", "1", "2", "3", "4", "5", "6", "7", "8"];
+                const sortedKeys = Object.keys(counts).sort((a, b) => gradeOrder.indexOf(a) - gradeOrder.indexOf(b));
+                
+                const breakdownParts = sortedKeys.map(g => `Grade ${g}: ${counts[g]}`);
+                resultsSummary.innerText = breakdownParts.join(' | ') + ` | Total: ${filtered.length} Students`;
             }
             renderData(filtered);
         }
@@ -255,7 +233,7 @@
         }
 
         function renderData(items) {
-            resultsList.innerHTML = items.length ? '' : '<div class="text-center py-20 text-slate-400 font-medium bg-white rounded-3xl border border-dashed border-slate-200">No students match your criteria</div>';
+            resultsList.innerHTML = items.length ? '' : '<div class="text-center py-20 text-slate-400 font-medium">No students match your criteria</div>';
             items.forEach(item => {
                 const card = document.createElement('div');
                 card.className = "bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col gap-3 transition-transform active:scale-[0.98]";
@@ -282,18 +260,9 @@
                         </div>
                     </div>
                     <div class="grid grid-cols-3 gap-2 pt-3 border-t border-slate-50">
-                        <div>
-                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter mb-0.5">Teacher</p>
-                            <p class="text-xs font-semibold text-slate-700 truncate">${item.Teacher || 'N/A'}</p>
-                        </div>
-                        <div>
-                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter mb-0.5">Student ID</p>
-                            <p class="text-xs font-semibold text-slate-700">${studentID}</p>
-                        </div>
-                        <div>
-                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter mb-0.5">Birthdate</p>
-                            <p class="text-xs font-semibold text-slate-700">${bday}</p>
-                        </div>
+                        <div><p class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter mb-0.5">Teacher</p><p class="text-xs font-semibold text-slate-700 truncate">${item.Teacher || 'N/A'}</p></div>
+                        <div><p class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter mb-0.5">Student ID</p><p class="text-xs font-semibold text-slate-700">${studentID}</p></div>
+                        <div><p class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter mb-0.5">Birthdate</p><p class="text-xs font-semibold text-slate-700">${bday}</p></div>
                     </div>
                 `;
                 resultsList.appendChild(card);
