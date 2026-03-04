@@ -102,7 +102,9 @@
         document.getElementById('authLogo').classList.remove('hidden');
         document.getElementById('headerLogo').src = LOGO_URL;
 
+        // Updated with your new Apps Script URL
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzusxGH8-_jENAJV4S6hPJ9MmRJsus19MIj7WBGUGE1vcVByatCgS8y09gtdBa-ov2dgw/exec'; 
+        
         let rawData = [];
         let appMode = 'search'; 
         
@@ -136,9 +138,11 @@
                 showApp();
                 applyFiltersAndSort();
             } catch (err) {
+                localStorage.removeItem('class_access_key');
                 alert("Access Denied: " + err.message);
                 loginBtn.innerText = 'Unlock Dashboard';
                 loginBtn.disabled = false;
+                document.getElementById('accessKeyInput').value = "";
             }
         };
 
@@ -207,7 +211,6 @@
                 filtered = filtered.filter(s => s.Teacher === selectedTeacher);
                 filtered.sort((a, b) => String(a.Name).toLowerCase().localeCompare(String(b.Name).toLowerCase()));
                 
-                // Calculate Grade Breakdown
                 const counts = {};
                 filtered.forEach(s => {
                     const g = String(s.Grade || 'Unknown');
