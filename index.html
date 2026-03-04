@@ -1,1 +1,303 @@
-Code goes here.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Winchester P.S. Knights</title>
+    
+    <!-- iPhone Home Screen / PWA Icons -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Knights">
+    
+    <script>
+        // Updated with your specific GitHub Raw URL
+        const LOGO_URL = 'https://github.com/adamryan3976-glitch/WPS-Classes/blob/main/Knight%20Class%20Lists.png?raw=true';
+    </script>
+
+    <!-- Dynamic Favicon and Apple Touch Icon -->
+    <link id="favicon" rel="icon" type="image/png" href="https://github.com/adamryan3976-glitch/WPS-Classes/blob/main/Knight%20Class%20Lists.png?raw=true">
+    <link id="apple-icon" rel="apple-touch-icon" href="https://github.com/adamryan3976-glitch/WPS-Classes/blob/main/Knight%20Class%20Lists.png?raw=true">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .ios-blur { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .active-filter { background-color: #1e40af; color: white; border-color: #1e40af; }
+        .mode-active { background-color: #eff6ff; color: #1e40af; border-color: #bfdbfe; }
+        input:focus { outline: none; }
+        
+        /* Knights Theme Colors */
+        .text-knight-blue { color: #1e40af; }
+        .bg-knight-blue { background-color: #1e40af; }
+        .border-knight-gold { border-color: #eab308; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-900 font-sans">
+
+    <!-- Header -->
+    <nav class="sticky top-0 z-30 bg-white/90 ios-blur border-b border-slate-200 px-4 pt-4 pb-2">
+        <div class="max-w-2xl mx-auto">
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center gap-3">
+                    <img id="headerLogo" src="https://github.com/adamryan3976-glitch/WPS-Classes/blob/main/Knight%20Class%20Lists.png?raw=true" alt="Knights Logo" class="h-10 w-10 object-contain hidden border border-slate-100 rounded-lg bg-white">
+                    <h1 class="text-xl font-extrabold text-blue-800 tracking-tight">Knights Directory</h1>
+                </div>
+                <button id="logoutBtn" class="text-xs text-slate-400 font-semibold uppercase tracking-widest hidden">Logout</button>
+            </div>
+            
+            <div id="navControls" class="hidden space-y-3">
+                <!-- Mode Switcher -->
+                <div class="flex p-1 bg-slate-100 rounded-xl mb-2">
+                    <button onclick="setMode('search')" id="modeSearch" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all mode-active">Search All</button>
+                    <button onclick="setMode('class')" id="modeClass" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all">Class Lists</button>
+                </div>
+
+                <!-- Search View Controls -->
+                <div id="searchControls" class="space-y-3">
+                    <div class="relative">
+                        <input type="text" id="searchInput" placeholder="Search name, teacher, or room..." 
+                               class="w-full p-3 pl-11 rounded-xl bg-slate-100 border-none focus:ring-2 focus:ring-blue-500 text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-3.5 top-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+
+                    <div class="flex gap-2 overflow-x-auto no-scrollbar pb-2 text-xs font-bold uppercase tracking-wider">
+                        <button onclick="clearFilters()" id="filter-all" class="px-4 py-2 rounded-full border border-slate-200 bg-white whitespace-nowrap active-filter">All</button>
+                        <select id="gradeFilter" onchange="applyFiltersAndSort()" class="px-4 py-2 rounded-full border border-slate-200 bg-white outline-none">
+                            <option value="">Grade</option>
+                            <option value="JK">JK</option><option value="SK">SK</option>
+                            <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+                            <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+                            <option value="7">7</option><option value="8">8</option>
+                        </select>
+                        <select id="sortOption" onchange="applyFiltersAndSort()" class="px-4 py-2 rounded-full border border-slate-200 bg-white outline-none">
+                            <option value="Name">Sort: Name</option>
+                            <option value="Teacher">Sort: Teacher</option>
+                            <option value="Calendar">Sort: Calendar</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Class List View Controls -->
+                <div id="classListControls" class="hidden">
+                    <select id="teacherSelect" onchange="applyFiltersAndSort()" class="w-full p-3 rounded-xl bg-slate-100 border-none focus:ring-2 focus:ring-blue-500 text-sm font-semibold">
+                        <option value="">Choose a Teacher...</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-2xl mx-auto p-4">
+        <!-- Auth View -->
+        <div id="authView" class="mt-10 text-center max-w-sm mx-auto">
+            <div class="bg-white p-8 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100">
+                <img id="authLogo" src="https://github.com/adamryan3976-glitch/WPS-Classes/blob/main/Knight%20Class%20Lists.png?raw=true" alt="Knights Logo" class="w-32 h-32 mx-auto mb-6 object-contain hidden">
+                <h2 class="text-xl font-bold mb-2">Knights Secure Access</h2>
+                <p class="text-slate-500 text-sm mb-8">Verification required for Winchester P.S.</p>
+                <input type="password" id="accessKeyInput" placeholder="Enter Access Key" class="w-full p-4 rounded-xl bg-slate-50 border-2 border-transparent focus:border-blue-500 text-center mb-4 transition-all outline-none">
+                <button id="loginBtn" class="w-full bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg active:scale-95 transition-all">Unlock Dashboard</button>
+            </div>
+        </div>
+
+        <!-- App View -->
+        <div id="appView" class="hidden">
+            <div id="resultsSummary" class="mb-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Initialising...</div>
+            <div id="resultsList" class="grid gap-3"></div>
+        </div>
+    </main>
+
+    <script>
+        // Set URLs for Logo and Icons
+        const imgElements = ['authLogo', 'headerLogo'];
+        imgElements.forEach(id => {
+            const el = document.getElementById(id);
+            el.src = LOGO_URL;
+            // Only show authLogo immediately; headerLogo shows after login
+            if(id === 'authLogo') el.classList.remove('hidden');
+        });
+        
+        document.getElementById('favicon').href = LOGO_URL;
+        document.getElementById('apple-icon').href = LOGO_URL;
+
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzhNA2HKIiDNQkrTxdWTKvBC1cPjMIcxFzQNYjcQhZ3N0Wr7oTdQ6gE_ima4R7VSRTgZw/exec'; 
+        let rawData = [];
+        let appMode = 'search'; 
+        
+        const authView = document.getElementById('authView');
+        const appView = document.getElementById('appView');
+        const navControls = document.getElementById('navControls');
+        const loginBtn = document.getElementById('loginBtn');
+        const resultsList = document.getElementById('resultsList');
+        const resultsSummary = document.getElementById('resultsSummary');
+        const searchInput = document.getElementById('searchInput');
+        const gradeFilter = document.getElementById('gradeFilter');
+        const sortOption = document.getElementById('sortOption');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const teacherSelect = document.getElementById('teacherSelect');
+        const headerLogo = document.getElementById('headerLogo');
+
+        loginBtn.onclick = async () => {
+            const key = document.getElementById('accessKeyInput').value;
+            if(!key) return;
+            loginBtn.innerText = 'Connecting...';
+            loginBtn.disabled = true;
+
+            try {
+                const response = await fetch(`${SCRIPT_URL}?key=${key}`);
+                const data = await response.json();
+                if (data.error) throw new Error(data.error);
+                
+                rawData = data;
+                localStorage.setItem('class_access_key', key);
+                populateTeacherList();
+                showApp();
+                applyFiltersAndSort();
+            } catch (err) {
+                alert("Access Denied: " + err.message);
+                loginBtn.innerText = 'Unlock Dashboard';
+                loginBtn.disabled = false;
+            }
+        };
+
+        function showApp() {
+            authView.classList.add('hidden');
+            appView.classList.remove('hidden');
+            navControls.classList.remove('hidden');
+            logoutBtn.classList.remove('hidden');
+            headerLogo.classList.remove('hidden');
+        }
+
+        function setMode(mode) {
+            appMode = mode;
+            document.getElementById('modeSearch').classList.toggle('mode-active', mode === 'search');
+            document.getElementById('modeClass').classList.toggle('mode-active', mode === 'class');
+            document.getElementById('searchControls').classList.toggle('hidden', mode !== 'search');
+            document.getElementById('classListControls').classList.toggle('hidden', mode !== 'class');
+            applyFiltersAndSort();
+        }
+
+        function populateTeacherList() {
+            const teachers = [...new Set(rawData.map(item => item.Teacher))].filter(Boolean).sort();
+            teacherSelect.innerHTML = '<option value="">Choose a Teacher...</option>';
+            teachers.forEach(t => {
+                const opt = document.createElement('option');
+                opt.value = t;
+                opt.innerText = t;
+                teacherSelect.appendChild(opt);
+            });
+        }
+
+        function clearFilters() {
+            searchInput.value = "";
+            gradeFilter.value = "";
+            sortOption.value = "Name";
+            applyFiltersAndSort();
+        }
+
+        function applyFiltersAndSort() {
+            let filtered = [...rawData];
+            if (appMode === 'search') {
+                const searchTerm = searchInput.value.toLowerCase();
+                const selectedGrade = gradeFilter.value;
+                const sortBy = sortOption.value;
+
+                if(searchTerm) {
+                    filtered = filtered.filter(s => 
+                        String(s.Name).toLowerCase().includes(searchTerm) || 
+                        String(s.Teacher).toLowerCase().includes(searchTerm) ||
+                        String(s.Room).toLowerCase().includes(searchTerm)
+                    );
+                }
+                if(selectedGrade) {
+                    filtered = filtered.filter(s => String(s.Grade) === selectedGrade);
+                }
+                filtered.sort((a, b) => String(a[sortBy] || "").toLowerCase().localeCompare(String(b[sortBy] || "").toLowerCase()));
+            } else {
+                const selectedTeacher = teacherSelect.value;
+                if(!selectedTeacher) {
+                    resultsList.innerHTML = '<div class="text-center py-20 text-slate-400 font-medium bg-white rounded-3xl border border-dashed border-slate-200 m-2">Please select a teacher to view their class list</div>';
+                    resultsSummary.innerText = "Waiting for Selection";
+                    return;
+                }
+                filtered = filtered.filter(s => s.Teacher === selectedTeacher);
+                filtered.sort((a, b) => String(a.Name).toLowerCase().localeCompare(String(b.Name).toLowerCase()));
+            }
+            resultsSummary.innerText = `${filtered.length} Students Found`;
+            renderData(filtered);
+        }
+
+        function getVal(obj, searchKey) {
+            const clean = (str) => String(str).toLowerCase().replace(/[^a-z0-9]/g, '');
+            const target = clean(searchKey);
+            const keys = Object.keys(obj);
+            const foundKey = keys.find(k => clean(k).includes(target));
+            const value = foundKey ? obj[foundKey] : null;
+            return (value === null || value === undefined || value === '') ? '---' : value;
+        }
+
+        function renderData(items) {
+            resultsList.innerHTML = items.length ? '' : '<div class="text-center py-20 text-slate-400 font-medium bg-white rounded-3xl border border-dashed border-slate-200">No students match your criteria</div>';
+            items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col gap-3 transition-transform active:scale-[0.98]";
+                
+                const cal = String(item.Calendar || "").toUpperCase();
+                let calStyle = "bg-slate-50 text-slate-600 border-slate-100";
+                if (cal.includes("MOD")) calStyle = "bg-orange-100 text-orange-700 border-orange-200 font-black";
+                else if (cal.includes("REG")) calStyle = "bg-emerald-100 text-emerald-700 border-emerald-200 font-black";
+
+                const studentID = getVal(item, 'id');
+                const bday = getVal(item, 'birth');
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1 pr-4">
+                            <h3 class="font-bold text-slate-900 text-lg leading-tight">${item.Name}</h3>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 font-bold text-[10px] uppercase tracking-tighter">Grade ${item.Grade}</span>
+                                <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-500 font-bold text-[10px] uppercase tracking-tighter">Room ${item.Room}</span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="inline-block px-2 py-1 rounded-md text-[10px] uppercase tracking-widest border ${calStyle}">${cal || 'N/A'}</span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 pt-3 border-t border-slate-50">
+                        <div>
+                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter mb-0.5">Teacher</p>
+                            <p class="text-xs font-semibold text-slate-700 truncate">${item.Teacher || 'N/A'}</p>
+                        </div>
+                        <div>
+                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter mb-0.5">Student ID</p>
+                            <p class="text-xs font-semibold text-slate-700">${studentID}</p>
+                        </div>
+                        <div>
+                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter mb-0.5">Birthdate</p>
+                            <p class="text-xs font-semibold text-slate-700">${bday}</p>
+                        </div>
+                    </div>
+                `;
+                resultsList.appendChild(card);
+            });
+        }
+
+        searchInput.oninput = () => applyFiltersAndSort();
+        
+        window.onload = () => {
+            const savedKey = localStorage.getItem('class_access_key');
+            if(savedKey) {
+                document.getElementById('accessKeyInput').value = savedKey;
+                loginBtn.click();
+            }
+        };
+
+        logoutBtn.onclick = () => {
+            localStorage.removeItem('class_access_key');
+            location.reload();
+        };
+    </script>
+</body>
+</html>
