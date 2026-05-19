@@ -2,299 +2,489 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Winchester P.S. Knights</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>WPS Staff Portal | Winchester Public School</title>
     
-    <!-- iPhone Home Screen / PWA Icons -->
+    <!-- Favicon and Apple Home Screen Icon -->
+    <link rel="icon" type="image/png" href="WPS Logo RBG.png">
+    <link rel="apple-touch-icon" href="WPS Logo RBG.png">
+    
+    <!-- PWA / Mobile Web App Meta Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Knights">
+    <meta name="apple-mobile-web-app-title" content="WPS Staff">
     
-    <script>
-        const LOGO_URL = 'https://github.com/adamryan3976-glitch/WPS-Classes/blob/main/Knight%20Class%20Lists.png?raw=true';
-    </script>
-
-    <link id="favicon" rel="icon" type="image/png" href="https://github.com/adamryan3976-glitch/WPS-Classes/blob/main/Knight%20Class%20Lists.png?raw=true">
-    <link id="apple-icon" rel="apple-touch-icon" href="https://github.com/adamryan3976-glitch/WPS-Classes/blob/main/Knight%20Class%20Lists.png?raw=true">
-
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        .ios-blur { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .active-filter { background-color: #1e40af; color: white; border-color: #1e40af; }
-        .mode-active { background-color: #eff6ff; color: #1e40af; border-color: #bfdbfe; }
-        input:focus { outline: none; }
+        :root {
+            --wps-blue: #0077b6;
+            --wps-gold: #d4a373;
+            --wps-dark: #2b2d42;
+            --wps-gray: #8d99ae;
+            --wps-parchment: #fefae0;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+        }
+
+        .knight-gradient {
+            background: linear-gradient(135deg, #1a1c2c 0%, #4a4e69 100%);
+        }
+
+        /* App Card is now the link itself */
+        .app-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-bottom: 4px solid transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            text-decoration: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .app-card:active {
+            transform: scale(0.97);
+            background-color: #f1f5f9;
+        }
+
+        @media (min-width: 1024px) {
+            .app-card:hover {
+                transform: translateY(-8px);
+                border-bottom-color: var(--wps-blue);
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+            /* Visual feedback for the pseudo-button inside on hover */
+            .app-card:hover .fake-button {
+                background-color: var(--wps-blue);
+                color: white;
+            }
+            .app-card.duty-card:hover .fake-button { background-color: #e11d48; }
+            .app-card.lists-card:hover .fake-button { background-color: #4f46e5; }
+            .app-card.time-card:hover .fake-button { background-color: #2563eb; }
+            .app-card.scan-card:hover .fake-button { background-color: #d97706; }
+            .app-card.prep-card:hover .fake-button { background-color: #059669; }
+            .app-card.wheel-card:hover .fake-button { background-color: #7c3aed; }
+        }
+
+        .live-indicator {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Prevent scrolling when blocked */
+        body.blocked-scroll {
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* Access verification modal animations */
+        .fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
     </style>
 </head>
-<body class="bg-slate-50 min-h-screen text-slate-900 font-sans">
+<body class="text-slate-800 antialiased blocked-scroll">
 
-    <!-- Header -->
-    <nav class="sticky top-0 z-30 bg-white/90 ios-blur border-b border-slate-200 px-4 pt-4 pb-2">
-        <div class="max-w-2xl mx-auto">
-            <div class="flex justify-between items-center mb-4">
-                <div class="flex items-center gap-2">
-                    <!-- Back Button to Hub -->
-                    <a href="https://winchesterps.ca/" class="flex items-center gap-1 py-1.5 px-2 -ml-1 bg-gray-50 border border-gray-100 rounded-lg text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all shadow-sm" title="Back to Landing Page">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7" />
-                        </svg>
-                        <span class="text-[9px] font-black tracking-tighter uppercase">Back to Hub</span>
-                    </a>
-                    <img id="headerLogo" src="" alt="Knights Logo" class="h-8 w-8 object-contain hidden border border-slate-100 rounded-lg bg-white ml-1">
-                </div>
-                
-                <div class="flex items-center gap-3">
-                    <h1 class="text-lg font-extrabold text-blue-800 tracking-tight hidden sm:block">Knights Directory</h1>
-                    <button id="logoutBtn" class="text-[10px] text-slate-400 font-black uppercase tracking-widest hidden bg-slate-50 px-2 py-1.5 rounded-lg border border-slate-100">Logout</button>
+    <!-- BLOCKER OVERLAY SCREEN -->
+    <div id="blocker-screen" class="fixed inset-0 z-[9999] bg-slate-950 flex flex-col items-center justify-center p-6 text-center">
+        <div class="max-w-md w-full">
+            <!-- Secret Trigger on Image: Click 5 times within 3 seconds -->
+            <div class="relative group mx-auto mb-8 w-32 sm:w-40 cursor-default select-none">
+                <div class="absolute -inset-1 bg-gradient-to-r from-blue-500 to-amber-500 rounded-full blur opacity-25"></div>
+                <div class="relative bg-slate-900 p-4 rounded-3xl border border-white/10 shadow-2xl">
+                    <img id="secret-logo-trigger" src="WPS Logo RBG.png" alt="Winchester Knights Logo" class="w-full h-auto drop-shadow-2xl select-none" draggable="false">
                 </div>
             </div>
             
-            <div id="navControls" class="hidden space-y-3">
-                <div class="flex p-1 bg-slate-100 rounded-xl mb-2">
-                    <button onclick="setMode('search')" id="modeSearch" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all mode-active">Search All</button>
-                    <button onclick="setMode('class')" id="modeClass" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all">Class Lists</button>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-white mb-4">
+                This Site Is No Longer Available
+            </h1>
+            <p class="text-slate-400 text-sm sm:text-base leading-relaxed mb-8">
+                The Winchester Public School Staff Portal has been decommissioned or relocated. Please contact your system administrator if you believe this is an error.
+            </p>
+            <div class="w-16 h-1 bg-slate-800 mx-auto rounded-full"></div>
+        </div>
+    </div>
+
+    <!-- SECRET ENTRY MODAL -->
+    <div id="secret-modal" class="fixed inset-0 z-[10000] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-100 transform transition-all duration-300 scale-95 opacity-0 fade-in">
+            <div class="flex justify-between items-start mb-6">
+                <div>
+                    <h3 class="text-xl font-bold text-slate-900">Staff Verification</h3>
+                    <p class="text-slate-500 text-xs mt-1">Enter your credentials to bypass the portal lock.</p>
+                </div>
+                <button id="close-modal-btn" class="text-slate-400 hover:text-slate-600 p-1">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+            
+            <form id="verification-form" class="space-y-4">
+                <div>
+                    <label for="staff-email" class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Staff Email Address</label>
+                    <input type="email" id="staff-email" required placeholder="name@winchesterps.ca" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
                 </div>
 
-                <div id="searchControls" class="space-y-3">
-                    <div class="relative">
-                        <input type="text" id="searchInput" placeholder="Search name, teacher, or room..." 
-                               class="w-full p-3 pl-11 rounded-xl bg-slate-100 border-none focus:ring-2 focus:ring-blue-500 text-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-3.5 top-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
+                <div>
+                    <label for="staff-password" class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Password</label>
+                    <input type="password" id="staff-password" required placeholder="••••••••" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                </div>
+                
+                <div id="error-message" class="text-rose-500 text-xs font-semibold hidden bg-rose-50 p-3 rounded-lg flex items-center gap-2">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span id="error-text">Access Denied: Incorrect email or password.</span>
+                </div>
+
+                <div id="success-message" class="text-emerald-600 text-xs font-semibold hidden bg-emerald-50 p-3 rounded-lg flex items-center gap-2">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Access granted! Loading portal...</span>
+                </div>
+
+                <button type="submit" id="submit-btn" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-md flex items-center justify-center gap-2">
+                    <span>Verify Access</span>
+                    <i id="loading-spinner" class="fas fa-circle-notch animate-spin hidden"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN PORTAL WRAPPER (HIDDEN UNTIL AUTHORIZED) -->
+    <div id="portal-content" class="hidden">
+        <!-- Header / Nav -->
+        <nav class="bg-white border-b border-slate-200 sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16 items-center">
+                    <div class="flex items-center gap-2 sm:gap-3">
+                        <img src="WPS Logo RBG.png" alt="WPS Logo" class="h-8 sm:h-10 w-auto">
+                        <span class="font-bold text-lg sm:text-xl tracking-tight text-slate-900 ml-1">
+                            Winchester <span class="text-blue-600">P.S.</span> Staff
+                        </span>
                     </div>
 
-                    <div class="flex gap-2 overflow-x-auto no-scrollbar pb-2 text-xs font-bold uppercase tracking-wider">
-                        <button onclick="clearFilters()" id="filter-all" class="px-4 py-2 rounded-full border border-slate-200 bg-white whitespace-nowrap active-filter">All</button>
-                        <select id="gradeFilter" onchange="applyFiltersAndSort()" class="px-4 py-2 rounded-full border border-slate-200 bg-white outline-none">
-                            <option value="">Grade</option>
-                            <option value="JK">JK</option><option value="SK">SK</option>
-                            <option value="1">1</option><option value="2">2</option><option value="3">3</option>
-                            <option value="4">4</option><option value="5">5</option><option value="6">6</option>
-                            <option value="7">7</option><option value="8">8</option>
-                        </select>
-                        <select id="sortOption" onchange="applyFiltersAndSort()" class="px-4 py-2 rounded-full border border-slate-200 bg-white outline-none">
-                            <option value="Name">Sort: Name</option>
-                            <option value="Teacher">Sort: Teacher</option>
-                            <option value="Calendar">Sort: Calendar</option>
-                        </select>
+                    <!-- Desktop Live Display -->
+                    <div id="cycle-display" class="hidden sm:flex items-center gap-3 bg-slate-50 px-4 py-1.5 rounded-full border border-slate-200">
+                        <div class="w-2 h-2 rounded-full bg-emerald-500 live-indicator"></div>
+                        <span id="live-date" class="text-xs font-medium text-slate-600">Loading Date...</span>
+                        <span class="text-slate-300">|</span>
+                        <span id="live-cycle" class="text-xs font-bold text-blue-600 uppercase tracking-wider">Day ?</span>
                     </div>
                 </div>
+            </div>
+        </nav>
 
-                <div id="classListControls" class="hidden">
-                    <select id="teacherSelect" onchange="applyFiltersAndSort()" class="w-full p-3 rounded-xl bg-slate-100 border-none focus:ring-2 focus:ring-blue-500 text-sm font-semibold">
-                        <option value="">Choose a Teacher...</option>
-                    </select>
+        <!-- Hero Section -->
+        <header class="knight-gradient text-white py-12 sm:py-16 px-6 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full -mr-24 -mt-24 blur-3xl"></div>
+            <div class="max-w-7xl mx-auto relative z-10 flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12">
+                <div class="w-full md:w-2/3 text-center md:text-left">
+                    <div class="inline-block px-4 py-1.5 mb-6 text-xs font-semibold tracking-wide uppercase bg-blue-500/20 border border-blue-400/30 rounded-full text-blue-200">
+                        Staff Resource Hub
+                    </div>
+                    <h1 class="text-3xl sm:text-4xl md:text-6xl font-extrabold mb-4 sm:mb-6 leading-tight">
+                        Welcome back, <br/><span class="text-blue-400">Winchester Knights.</span>
+                    </h1>
+
+                    <!-- Mobile Live Display -->
+                    <div class="sm:hidden mb-6 flex justify-center">
+                        <div class="bg-white/10 backdrop-blur-md border border-white/20 px-4 py-2 rounded-xl inline-flex items-center gap-3">
+                             <span id="mobile-live-date" class="text-sm font-medium text-blue-50">Loading...</span>
+                             <span class="text-white/30">|</span>
+                             <span id="mobile-live-cycle" class="text-sm font-bold text-blue-300 uppercase">Day ?</span>
+                        </div>
+                     </div>
+
+                    <p class="text-base sm:text-lg text-slate-300 max-w-xl mx-auto md:mx-0 px-4 md:px-0">
+                        Access all essential applications and internal tools from one secure location.
+                    </p>
+                </div>
+                
+                <div class="hidden sm:flex md:w-1/3 justify-center">
+                    <div class="relative group">
+                        <div class="absolute -inset-1 bg-gradient-to-r from-blue-500 to-amber-500 rounded-full blur opacity-25"></div>
+                        <div class="relative bg-slate-900 p-4 sm:p-6 rounded-3xl border border-white/10 shadow-2xl">
+                            <img src="WPS Logo RBG.png" alt="Winchester Knights Logo" class="w-32 sm:w-48 h-auto drop-shadow-2xl">
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </nav>
+        </header>
 
-    <main class="max-w-2xl mx-auto p-4">
-        <div id="authView" class="mt-10 text-center max-w-sm mx-auto">
-            <div class="bg-white p-8 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100">
-                <img id="authLogo" src="" alt="Knights Logo" class="w-32 h-32 mx-auto mb-6 object-contain hidden">
-                <h2 class="text-xl font-bold mb-2">Knights Secure Access</h2>
-                <p class="text-slate-500 text-sm mb-8">Verification required for Winchester P.S.</p>
-                <input type="password" id="accessKeyInput" placeholder="Enter Access Key" class="w-full p-4 rounded-xl bg-slate-50 border-2 border-transparent focus:border-blue-500 text-center mb-4 outline-none">
-                <button id="loginBtn" class="w-full bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg active:scale-95 transition-all">Unlock Dashboard</button>
+        <!-- Main Content: Apps Grid -->
+        <main id="apps" class="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 py-12 sm:py-16">
+            <div class="mb-10 text-center sm:text-left">
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">Internal Applications</h2>
+                <p class="text-slate-500 text-sm sm:text-base">Your essential tools for daily school operations.</p>
             </div>
-        </div>
 
-        <div id="appView" class="hidden">
-            <div id="resultsSummary" class="mb-4 text-[10px] font-black text-slate-500 uppercase tracking-widest leading-relaxed bg-blue-50/50 p-3 rounded-xl border border-blue-100/50">Initialising...</div>
-            <div id="resultsList" class="grid gap-3"></div>
-        </div>
-    </main>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 sm:gap-8">
+                
+                <!-- App 0: Class Lists -->
+                <a href="https://class-lists.winchesterps.ca/" class="app-card lists-card bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                    <div class="w-20 h-20 sm:w-24 sm:h-24 bg-indigo-50 rounded-2xl flex items-center justify-center mb-6 shadow-inner overflow-hidden">
+                        <img src="Knight Class Lists.png" alt="Class Lists Icon" class="w-16 h-16 sm:w-20 sm:h-20 object-contain">
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-bold text-slate-900 mb-2">Class Lists</h3>
+                    <p class="text-slate-500 text-sm mb-6 flex-grow">Access current student groupings and classroom assignments.</p>
+                    <div class="fake-button w-full py-3 bg-slate-100 text-slate-700 font-bold rounded-xl transition-colors text-center shadow-sm">Open App</div>
+                </a>
+
+                <!-- App 1: Timetables -->
+                <a href="http://timetables.winchesterps.ca/" class="app-card time-card bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                    <div class="w-20 h-20 sm:w-24 sm:h-24 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 shadow-inner overflow-hidden">
+                        <img src="Knight Timetables.png" alt="Timetables Icon" class="w-16 h-16 sm:w-20 sm:h-20 object-contain">
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-bold text-slate-900 mb-2">Timetables</h3>
+                    <p class="text-slate-500 text-sm mb-6 flex-grow">View Teacher Timetables and the Prep schedule</p>
+                    <div class="fake-button w-full py-3 bg-slate-100 text-slate-700 font-bold rounded-xl transition-colors text-center shadow-sm">Open App</div>
+                </a>
+
+                <!-- App 2: CB Scanner -->
+                <a href="https://cbscanner.winchesterps.ca/" class="app-card scan-card bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                    <div class="w-20 h-20 sm:w-24 sm:h-24 bg-amber-50 rounded-2xl flex items-center justify-center mb-6 shadow-inner overflow-hidden">
+                        <img src="ScannerAppLogo.png" alt="CB Scanner Icon" class="w-16 h-16 sm:w-20 sm:h-20 object-contain">
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-bold text-slate-900 mb-2">CB Scanner</h3>
+                    <p class="text-slate-500 text-sm mb-6 flex-grow">Chromebook inventory management and rapid check-out tool.</p>
+                    <div class="fake-button w-full py-3 bg-slate-100 text-slate-700 font-bold rounded-xl transition-colors text-center shadow-sm">Open App</div>
+                </a>
+
+                <!-- App 3: Prep Payback -->
+                <a href="https://preppayback.winchesterps.ca/" class="app-card prep-card bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                    <div class="w-20 h-20 sm:w-24 sm:h-24 bg-emerald-50 rounded-2xl flex items-center justify-center mb-6 shadow-inner overflow-hidden">
+                        <img src="Prep Payback.png" alt="Prep Payback Icon" class="w-16 h-16 sm:w-20 sm:h-20 object-contain">
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-bold text-slate-900 mb-2">Prep Payback</h3>
+                    <p class="text-slate-500 text-sm mb-6 flex-grow">Track and manage preparation time owed and repayment status.</p>
+                    <div class="fake-button w-full py-3 bg-slate-100 text-slate-700 font-bold rounded-xl transition-colors text-center shadow-sm">Open App</div>
+                </a>
+
+                <!-- App 4: Wheel of Students -->
+                <a href="http://random-name.winchesterps.ca/" class="app-card wheel-card bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                    <div class="w-20 h-20 sm:w-24 sm:h-24 bg-purple-50 rounded-2xl flex items-center justify-center mb-6 shadow-inner overflow-hidden">
+                        <img src="Knight Wheel.png" alt="Wheel of Students Icon" class="w-16 h-16 sm:w-20 sm:h-20 object-contain">
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-bold text-slate-900 mb-2">Student Wheel</h3>
+                    <p class="text-slate-500 text-sm mb-6 flex-grow">Randomly select students for participation or prizes.</p>
+                    <div class="fake-button w-full py-3 bg-slate-100 text-slate-700 font-bold rounded-xl transition-colors text-center shadow-sm">Open App</div>
+                </a>
+
+                <!-- App 5: Duty Schedule -->
+                <a id="duty-link-container" href="http://duty.winchesterps.ca/" class="app-card duty-card bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                    <div class="w-20 h-20 sm:w-24 sm:h-24 bg-rose-50 rounded-2xl flex items-center justify-center mb-6 shadow-inner overflow-hidden">
+                        <img src="DutyLogo.png" alt="Duty Schedule Icon" class="w-16 h-16 sm:w-20 sm:h-20 object-contain">
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-bold text-slate-900 mb-2">Duty Schedule</h3>
+                    <p class="text-slate-500 text-sm mb-6 flex-grow">Access and check the weekly staff duty rotations and locations.</p>
+                    <div id="duty-label" class="fake-button w-full py-3 bg-slate-100 text-slate-700 font-bold rounded-xl transition-colors text-center shadow-sm">Open App</div>
+                </a>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-slate-900 text-slate-400 py-10 px-6 border-t border-slate-800">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+                <div class="flex items-center gap-3">
+                    <img src="WPS Logo RBG.png" alt="WPS Logo" class="h-8 sm:h-10 w-auto opacity-80">
+                    <div class="text-left">
+                        <div class="text-white font-bold text-sm sm:text-base">Winchester Public School</div>
+                        <div class="text-xs">Knight Pride | Community Excellence</div>
+                    </div>
+                </div>
+                <div class="text-xs sm:text-sm text-center">
+                    &copy; 2024 Winchester P.S. Staff Portal.
+                </div>
+                <div class="flex gap-8 text-2xl">
+                    <a href="#" class="hover:text-white transition-colors p-2"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="hover:text-white transition-colors p-2"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="hover:text-white transition-colors p-2"><i class="fas fa-globe"></i></a>
+                </div>
+            </div>
+        </footer>
+    </div>
 
     <script>
-        document.getElementById('authLogo').src = LOGO_URL;
-        document.getElementById('authLogo').classList.remove('hidden');
-        document.getElementById('headerLogo').src = LOGO_URL;
-
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzusxGH8-_jENAJV4S6hPJ9MmRJsus19MIj7WBGUGE1vcVByatCgS8y09gtdBa-ov2dgw/exec'; 
+        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzGgmaua3PK6IXiljngAxcuQP0FoRxtLQ9ec6MQOSRpmFlGfIkUc_64jM_eI-G-0Wzj/exec';
         
-        let rawData = [];
-        let appMode = 'search'; 
-        
-        const authView = document.getElementById('authView');
-        const appView = document.getElementById('appView');
-        const navControls = document.getElementById('navControls');
-        const loginBtn = document.getElementById('loginBtn');
-        const resultsList = document.getElementById('resultsList');
-        const resultsSummary = document.getElementById('resultsSummary');
-        const searchInput = document.getElementById('searchInput');
-        const gradeFilter = document.getElementById('gradeFilter');
-        const sortOption = document.getElementById('sortOption');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const teacherSelect = document.getElementById('teacherSelect');
-        const headerLogo = document.getElementById('headerLogo');
+        // State variables for secret tap detection
+        let logoTaps = 0;
+        let logoTapTimer = null;
 
-        loginBtn.onclick = async () => {
-            const key = document.getElementById('accessKeyInput').value;
-            if(!key) return;
-            loginBtn.innerText = 'Connecting...';
-            loginBtn.disabled = true;
+        // On Load Check
+        window.onload = function() {
+            if (checkAuthorization()) {
+                revealPortal();
+            }
+            setupSecretTrigger();
+        };
+
+        // Check if user is already verified via localStorage
+        function checkAuthorization() {
+            const isAuth = localStorage.getItem('wps_staff_authorized');
+            const authTime = localStorage.getItem('wps_staff_auth_timestamp');
+            
+            if (isAuth === 'true' && authTime) {
+                // Keep authorization valid for 30 days
+                const limit = 30 * 24 * 60 * 60 * 1000;
+                if (new Date().getTime() - Number(authTime) < limit) {
+                    return true;
+                }
+            }
+            localStorage.removeItem('wps_staff_authorized');
+            localStorage.removeItem('wps_staff_auth_timestamp');
+            return false;
+        }
+
+        // Set up the secret logo interaction
+        function setupSecretTrigger() {
+            const logo = document.getElementById('secret-logo-trigger');
+            if (!logo) return;
+
+            logo.addEventListener('click', () => {
+                logoTaps++;
+                
+                if (logoTapTimer) clearTimeout(logoTapTimer);
+                
+                logoTapTimer = setTimeout(() => {
+                    logoTaps = 0;
+                }, 3000); // Reset count after 3 seconds of inactivity
+
+                if (logoTaps >= 5) {
+                    logoTaps = 0;
+                    clearTimeout(logoTapTimer);
+                    openSecretModal();
+                }
+            });
+        }
+
+        // Modal Action functions
+        function openSecretModal() {
+            const modal = document.getElementById('secret-modal');
+            modal.classList.remove('hidden');
+            document.getElementById('staff-email').focus();
+        }
+
+        document.getElementById('close-modal-btn').addEventListener('click', () => {
+            document.getElementById('secret-modal').classList.add('hidden');
+            hideAlerts();
+        });
+
+        function hideAlerts() {
+            document.getElementById('error-message').classList.add('hidden');
+            document.getElementById('success-message').classList.add('hidden');
+        }
+
+        // Verification Form Submission
+        document.getElementById('verification-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideAlerts();
+            
+            const emailInput = document.getElementById('staff-email').value.trim().toLowerCase();
+            const passwordInput = document.getElementById('staff-password').value; // Keep original casing for password security
+            const submitBtn = document.getElementById('submit-btn');
+            const spinner = document.getElementById('loading-spinner');
+            
+            // UI Loading state
+            submitBtn.disabled = true;
+            spinner.classList.remove('hidden');
 
             try {
-                const response = await fetch(`${SCRIPT_URL}?key=${key}`);
+                // Request access check from App Script deployment URL, passing both fields
+                const response = await fetch(`${WEB_APP_URL}?action=verify&email=${encodeURIComponent(emailInput)}&password=${encodeURIComponent(passwordInput)}`);
                 const data = await response.json();
-                if (data.error) throw new Error(data.error);
-                
-                rawData = data;
-                localStorage.setItem('class_access_key', key);
-                populateTeacherList();
-                showApp();
-                applyFiltersAndSort();
-            } catch (err) {
-                localStorage.removeItem('class_access_key');
-                alert("Access Denied: " + err.message);
-                loginBtn.innerText = 'Unlock Dashboard';
-                loginBtn.disabled = false;
-                document.getElementById('accessKeyInput').value = "";
+
+                if (data && data.approved === true) {
+                    // Success path
+                    document.getElementById('success-message').classList.remove('hidden');
+                    localStorage.setItem('wps_staff_authorized', 'true');
+                    localStorage.setItem('wps_staff_auth_timestamp', new Date().getTime().toString());
+                    
+                    // Clear the password input for security
+                    document.getElementById('staff-password').value = "";
+                    
+                    setTimeout(() => {
+                        document.getElementById('secret-modal').classList.add('hidden');
+                        revealPortal();
+                    }, 1500);
+                } else {
+                    // Fail path
+                    document.getElementById('error-text').textContent = "Access Denied: Incorrect email or password.";
+                    document.getElementById('error-message').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Validation error:', error);
+                document.getElementById('error-text').textContent = "Validation offline. Please try again later.";
+                document.getElementById('error-message').classList.remove('hidden');
+            } finally {
+                submitBtn.disabled = false;
+                spinner.classList.add('hidden');
             }
-        };
+        });
 
-        function showApp() {
-            authView.classList.add('hidden');
-            appView.classList.remove('hidden');
-            navControls.classList.remove('hidden');
-            logoutBtn.classList.remove('hidden');
-            headerLogo.classList.remove('hidden');
+        // Unhide the portal site elements and fetch day/cycle content
+        function revealPortal() {
+            document.getElementById('blocker-screen').classList.add('hidden');
+            document.getElementById('portal-content').classList.remove('hidden');
+            document.body.classList.remove('blocked-scroll');
+            fetchLiveStatus();
         }
 
-        function setMode(mode) {
-            appMode = mode;
-            document.getElementById('modeSearch').classList.toggle('mode-active', mode === 'search');
-            document.getElementById('modeClass').classList.toggle('mode-active', mode === 'class');
-            document.getElementById('searchControls').classList.toggle('hidden', mode !== 'search');
-            document.getElementById('classListControls').classList.toggle('hidden', mode !== 'class');
-            applyFiltersAndSort();
-        }
+        // Live cycle schedule fetch logic
+        async function fetchLiveStatus() {
+            if (!WEB_APP_URL || WEB_APP_URL.includes('PASTE_YOUR')) return;
 
-        function populateTeacherList() {
-            const teachers = [...new Set(rawData.map(item => item.Teacher))].filter(Boolean).sort();
-            teacherSelect.innerHTML = '<option value="">Choose a Teacher...</option>';
-            teachers.forEach(t => {
-                const opt = document.createElement('option');
-                opt.value = t;
-                opt.innerText = t;
-                teacherSelect.appendChild(opt);
-            });
-        }
-
-        function clearFilters() {
-            searchInput.value = "";
-            gradeFilter.value = "";
-            sortOption.value = "Name";
-            applyFiltersAndSort();
-        }
-
-        function applyFiltersAndSort() {
-            let filtered = [...rawData];
-            
-            if (appMode === 'search') {
-                const searchTerm = searchInput.value.toLowerCase();
-                const selectedGrade = gradeFilter.value;
-                const sortBy = sortOption.value;
-
-                if(searchTerm) {
-                    filtered = filtered.filter(s => 
-                        String(s.Name).toLowerCase().includes(searchTerm) || 
-                        String(s.Teacher).toLowerCase().includes(searchTerm) ||
-                        String(s.Room).toLowerCase().includes(searchTerm)
-                    );
-                }
-                if(selectedGrade) {
-                    filtered = filtered.filter(s => String(s.Grade) === selectedGrade);
-                }
-                filtered.sort((a, b) => String(a[sortBy] || "").toLowerCase().localeCompare(String(b[sortBy] || "").toLowerCase()));
-                resultsSummary.innerText = `${filtered.length} Students Found`;
-            } else {
-                const selectedTeacher = teacherSelect.value;
-                if(!selectedTeacher) {
-                    resultsList.innerHTML = '<div class="text-center py-20 text-slate-400 font-medium bg-white rounded-3xl border border-dashed border-slate-200 m-2">Please select a teacher to view their class list</div>';
-                    resultsSummary.innerText = "Waiting for Selection";
-                    return;
-                }
-                filtered = filtered.filter(s => s.Teacher === selectedTeacher);
-                filtered.sort((a, b) => String(a.Name).toLowerCase().localeCompare(String(b.Name).toLowerCase()));
+            try {
+                const response = await fetch(`${WEB_APP_URL}?action=getStatus`);
+                const data = await response.json();
                 
-                const counts = {};
-                filtered.forEach(s => {
-                    const g = String(s.Grade || 'Unknown');
-                    counts[g] = (counts[g] || 0) + 1;
+                const dateObj = new Date(data.date);
+                const formattedDate = isNaN(dateObj.getTime()) ? data.date : dateObj.toLocaleDateString('en-US', { 
+                    weekday: 'short', 
+                    month: 'short', 
+                    day: 'numeric' 
                 });
 
-                const gradeOrder = ["JK", "SK", "1", "2", "3", "4", "5", "6", "7", "8"];
-                const sortedKeys = Object.keys(counts).sort((a, b) => gradeOrder.indexOf(a) - gradeOrder.indexOf(b));
-                
-                const breakdownParts = sortedKeys.map(g => `Grade ${g}: ${counts[g]}`);
-                resultsSummary.innerText = breakdownParts.join(' | ') + ` | Total: ${filtered.length} Students`;
+                updateUI(formattedDate, data.cycleDay);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                updateUI(new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }), 'Offline');
             }
-            renderData(filtered);
         }
 
-        function getVal(obj, searchKey) {
-            const clean = (str) => String(str).toLowerCase().replace(/[^a-z0-9]/g, '');
-            const target = clean(searchKey);
-            const keys = Object.keys(obj);
-            const foundKey = keys.find(k => clean(k).includes(target));
-            const value = foundKey ? obj[foundKey] : null;
-            return (value === null || value === undefined || value === '') ? '---' : value;
-        }
+        function updateUI(dateStr, cycle) {
+            document.getElementById('live-date').textContent = dateStr;
+            document.getElementById('live-cycle').textContent = `Day ${cycle}`;
+            document.getElementById('mobile-live-date').textContent = dateStr;
+            document.getElementById('mobile-live-cycle').textContent = `Day ${cycle}`;
+            document.getElementById('cycle-display').classList.remove('hidden');
 
-        function renderData(items) {
-            resultsList.innerHTML = items.length ? '' : '<div class="text-center py-20 text-slate-400 font-medium">No students match your criteria</div>';
-            items.forEach(item => {
-                const card = document.createElement('div');
-                card.className = "bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col gap-3 transition-transform active:scale-[0.98]";
-                
-                const cal = String(item.Calendar || "").toUpperCase();
-                let calStyle = "bg-slate-50 text-slate-600 border-slate-100";
-                if (cal.includes("MOD")) calStyle = "bg-orange-100 text-orange-700 border-orange-200 font-black";
-                else if (cal.includes("REG")) calStyle = "bg-emerald-100 text-emerald-700 border-emerald-200 font-black";
-
-                const studentID = getVal(item, 'id');
-                const bday = getVal(item, 'birth');
-
-                card.innerHTML = `
-                    <div class="flex justify-between items-start">
-                        <div class="flex-1 pr-4">
-                            <h3 class="font-bold text-slate-900 text-lg leading-tight">${item.Name}</h3>
-                            <div class="flex items-center gap-2 mt-1">
-                                <span class="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 font-bold text-[10px] uppercase tracking-tighter">Grade ${item.Grade}</span>
-                                <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-500 font-bold text-[10px] uppercase tracking-tighter">Room ${item.Room}</span>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <span class="inline-block px-2 py-1 rounded-md text-[10px] uppercase tracking-widest border ${calStyle}">${cal || 'N/A'}</span>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-3 gap-2 pt-3 border-t border-slate-50">
-                        <div><p class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter mb-0.5">Teacher</p><p class="text-xs font-semibold text-slate-700 truncate">${item.Teacher || 'N/A'}</p></div>
-                        <div><p class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter mb-0.5">Student ID</p><p class="text-xs font-semibold text-slate-700">${studentID}</p></div>
-                        <div><p class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter mb-0.5">Birthdate</p><p class="text-xs font-semibold text-slate-700">${bday}</p></div>
-                    </div>
-                `;
-                resultsList.appendChild(card);
-            });
-        }
-
-        searchInput.oninput = () => applyFiltersAndSort();
-        
-        window.onload = () => {
-            const savedKey = localStorage.getItem('class_access_key');
-            if(savedKey) {
-                document.getElementById('accessKeyInput').value = savedKey;
-                loginBtn.click();
+            const dutyLinkContainer = document.getElementById('duty-link-container');
+            const dutyLabel = document.getElementById('duty-label');
+            
+            if (cycle && !isNaN(cycle)) {
+                dutyLinkContainer.href = `http://duty.winchesterps.ca/?day=${cycle}`;
+                dutyLabel.textContent = `Open Day ${cycle} Schedule`;
             }
-        };
-
-        logoutBtn.onclick = () => {
-            localStorage.removeItem('class_access_key');
-            location.reload();
-        };
+        }
     </script>
 </body>
 </html>
