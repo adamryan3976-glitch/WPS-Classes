@@ -18,6 +18,10 @@
     <link id="apple-icon" rel="apple-touch-icon" href="https://github.com/adamryan3976-glitch/WPS-Classes/blob/main/Knight%20Class%20Lists.png?raw=true">
 
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Identity Services Library -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    
     <style>
         .ios-blur { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -91,13 +95,20 @@
     </nav>
 
     <main class="max-w-2xl mx-auto p-4">
+        <!-- Google Workspace Secure Auth View -->
         <div id="authView" class="mt-10 text-center max-w-sm mx-auto">
             <div class="bg-white p-8 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100">
                 <img id="authLogo" src="" alt="Knights Logo" class="w-32 h-32 mx-auto mb-6 object-contain hidden">
                 <h2 class="text-xl font-bold mb-2">Knights Secure Access</h2>
-                <p class="text-slate-500 text-sm mb-8">Verification required for Winchester P.S.</p>
-                <input type="password" id="accessKeyInput" placeholder="Enter Access Key" class="w-full p-4 rounded-xl bg-slate-50 border-2 border-transparent focus:border-blue-500 text-center mb-4 outline-none">
-                <button id="loginBtn" class="w-full bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg active:scale-95 transition-all">Unlock Dashboard</button>
+                <p class="text-slate-500 text-sm mb-8">Google Workspace verification required.</p>
+                
+                <!-- Google Sign-In Button Container -->
+                <div class="flex justify-center py-2">
+                    <div id="googleSignInButton"></div>
+                </div>
+                
+                <!-- System Messages -->
+                <p id="authMessage" class="text-xs text-slate-400 mt-6 leading-relaxed">Please use your official organizational account to sign in.</p>
             </div>
         </div>
 
@@ -108,19 +119,20 @@
     </main>
 
     <script>
+        // CONFIGURATION: Replace this value with your generated OAuth Client ID from Google Cloud
+        const GOOGLE_CLIENT_ID = "241712157669-1huukafbcpsifc4v35op6o80qjb10r0r.apps.googleusercontent.com";
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzusxGH8-_jENAJV4S6hPJ9MmRJsus19MIj7WBGUGE1vcVByatCgS8y09gtdBa-ov2dgw/exec'; 
+        
         document.getElementById('authLogo').src = LOGO_URL;
         document.getElementById('authLogo').classList.remove('hidden');
         document.getElementById('headerLogo').src = LOGO_URL;
 
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzusxGH8-_jENAJV4S6hPJ9MmRJsus19MIj7WBGUGE1vcVByatCgS8y09gtdBa-ov2dgw/exec'; 
-        
         let rawData = [];
         let appMode = 'search'; 
         
         const authView = document.getElementById('authView');
         const appView = document.getElementById('appView');
         const navControls = document.getElementById('navControls');
-        const loginBtn = document.getElementById('loginBtn');
         const resultsList = document.getElementById('resultsList');
         const resultsSummary = document.getElementById('resultsSummary');
         const searchInput = document.getElementById('searchInput');
@@ -129,31 +141,67 @@
         const logoutBtn = document.getElementById('logoutBtn');
         const teacherSelect = document.getElementById('teacherSelect');
         const headerLogo = document.getElementById('headerLogo');
+        const authMessage = document.getElementById('authMessage');
 
-        loginBtn.onclick = async () => {
-            const key = document.getElementById('accessKeyInput').value;
-            if(!key) return;
-            loginBtn.innerText = 'Connecting...';
-            loginBtn.disabled = true;
+        // Initialize Google Identity Services
+        window.onload = () => {
+            if (typeof google !== 'undefined') {
+                google.accounts.id.initialize({
+                    client_id: GOOGLE_CLIENT_ID,
+                    callback: handleCredentialResponse
+                });
+                
+                // Renders the official Google Sign-In Button inside our placeholder container
+                google.accounts.id.renderButton(
+                    document.getElementById("googleSignInButton"),
+                    { 
+                        theme: "outline", 
+                        size: "large", 
+                        width: "280",
+                        text: "signin_with" 
+                    }
+                );
+
+                // Auto-login check if a secure session token is already saved in the browser cache
+                const savedToken = localStorage.getItem('class_access_token');
+                if (savedToken) {
+                    verifyTokenAndLoad(savedToken);
+                }
+            } else {
+                authMessage.innerText = "Error loading secure login system. Check your connection.";
+                authMessage.className = "text-xs text-red-500 mt-6";
+            }
+        };
+
+        // Automatically triggered after a successful Google Sign-In
+        async function handleCredentialResponse(response) {
+            const idToken = response.credential;
+            verifyTokenAndLoad(idToken);
+        }
+
+        // Passes the secure JWT Token to Google Apps Script for server verification
+        async function verifyTokenAndLoad(token) {
+            authMessage.innerText = 'Verifying organizational credentials...';
+            authMessage.className = "text-xs text-blue-600 font-bold mt-6 animate-pulse";
 
             try {
-                const response = await fetch(`${SCRIPT_URL}?key=${key}`);
+                // Request verification and directory payload matching SCRIPT_URL endpoint
+                const response = await fetch(`${SCRIPT_URL}?action=verify&token=${token}`);
                 const data = await response.json();
+                
                 if (data.error) throw new Error(data.error);
                 
                 rawData = data;
-                localStorage.setItem('class_access_key', key);
+                localStorage.setItem('class_access_token', token);
                 populateTeacherList();
                 showApp();
                 applyFiltersAndSort();
             } catch (err) {
-                localStorage.removeItem('class_access_key');
-                alert("Access Denied: " + err.message);
-                loginBtn.innerText = 'Unlock Dashboard';
-                loginBtn.disabled = false;
-                document.getElementById('accessKeyInput').value = "";
+                localStorage.removeItem('class_access_token');
+                authMessage.innerText = "Access Denied: " + err.message;
+                authMessage.className = "text-xs text-red-500 font-semibold mt-6";
             }
-        };
+        }
 
         function showApp() {
             authView.classList.add('hidden');
@@ -282,17 +330,12 @@
         }
 
         searchInput.oninput = () => applyFiltersAndSort();
-        
-        window.onload = () => {
-            const savedKey = localStorage.getItem('class_access_key');
-            if(savedKey) {
-                document.getElementById('accessKeyInput').value = savedKey;
-                loginBtn.click();
-            }
-        };
 
         logoutBtn.onclick = () => {
-            localStorage.removeItem('class_access_key');
+            localStorage.removeItem('class_access_token');
+            if (typeof google !== 'undefined') {
+                google.accounts.id.disableAutoSelect();
+            }
             location.reload();
         };
     </script>
